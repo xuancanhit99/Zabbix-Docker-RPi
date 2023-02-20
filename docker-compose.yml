@@ -20,7 +20,7 @@ services:
       - /zabbix-mysql:/var/lib/mysql:rw
   zabbix-server-mysql:
     image: zabbix/zabbix-server-mysql:alpine-6.2-latest
-    restart: always
+#    restart: always
     networks:
       - zabbix-net
     ports:
@@ -61,7 +61,7 @@ services:
       - /zabbix-nginx/nginx:/etc/ssl/nginx:ro
       - /zabbix-nginx/modules/:/usr/share/zabbix/modules/:ro
     environment:
-      - ZBX-SERVER-HOST:zabbix-server-mysql
+      - ZBX-SERVER-HOST=zabbix-server-mysql
       - DB_SERVER_HOST=mysql-server
       - MYSQL_DATABASE=zabbix
       - MYSQL_USER=zabbix
