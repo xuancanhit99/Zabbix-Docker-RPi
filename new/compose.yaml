@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:alpine-5.4-latest
+    container_name: zabbix-server
+    platform: linux/arm64/v8
+    ports:
+      - 10051:10051
+    environment:
+      - DB_SERVER_HOST=postgres-server
+      - DB_SERVER_PORT=5432
+      - POSTGRES_DB=zabbix
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=zabbix
+      - POSTGRES_ROOT_PASSWORD=root
+    depends_on:
+      - postgres-server
+    restart: always
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:alpine-5.4-latest
+    container_name: zabbix-web
+    platform: linux/arm64/v8
+    ports:
+      - 8081:8080
+    environment:
+      - DB_SERVER_HOST=postgres-server
+      - DB_SERVER_PORT=5432
+      - POSTGRES_DB=zabbix
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=zabbix
+      - POSTGRES_ROOT_PASSWORD=root
+    depends_on:
+      - postgres-server
+    restart: always
+
+  postgres-server:
+    image: postgres:13
+    container_name: postgres-server
+    platform: linux/arm64/v8
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=zabbix
+      - POSTGRES_USER=zabbix
+      - POSTGRES_PASSWORD=zabbix
+      - POSTGRES_ROOT_PASSWORD=root_password
+    volumes:
+
+      - /path/in/my/raspberry:/var/lib/postgresql/data
+    restart: always
